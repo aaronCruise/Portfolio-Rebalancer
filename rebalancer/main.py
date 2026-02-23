@@ -1,56 +1,63 @@
 import argparse
 import sys
-from .models import AssetClass, Portfolio
+import json
+from .models import Portfolio
 from .engine import calculate_rebalance
 
-def main():
-    """
-    The main entry point for the CLI.
-    This function handles parsing arguments, running the logic, 
-    and printing the results in a clean format.
-    """
-    parser = argparse.ArgumentParser(
-        description="Portfolio Rebalancer: Calculate contribution-only rebalancing."
-    )
+def load_portfolio(file_path: str | None) -> Portfolio:
+    """Loads a portfolio from a JSON file, or a default if no path is given."""
+    file_to_load = file_path if file_path is not None else "portfolio.json"
+    
+    try:
+        with open(file_to_load, 'r') as f:
+            data = json.load(f)
+            return Portfolio.from_dict(data)
+    except FileNotFoundError:
+        print(f"Error: Portfolio file not found at '{file_to_load}'", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError:
+        print(f"Error: The file '{file_to_load}' is not a valid JSON file.", file=sys.stderr)
+        sys.exit(1)
+    except KeyError as e:
+        print(f"Error: Missing expected key {e} in '{file_to_load}'.", file=sys.stderr)
+        sys.exit(1)
 
+
+def main():
+    """The main entry point for the CLI."""
+    parser = argparse.ArgumentParser(
+        description="A CLI tool for contribution-only portfolio rebalancing."
+    )
     parser.add_argument(
         "--contribution", 
         type=float, 
         required=True, 
-        help="The dollar amount you are contributing today."
+        help="The dollar amount you are contributing."
     )
-
+    parser.add_argument(
+        "--file",
+        type=str,
+        help="Optional: Path to your portfolio JSON file. Defaults to 'portfolio.json'."
+    )
     args = parser.parse_args()
 
-    # A convenient demo portfolio to be run by default TODO
-    demo_portfolio = [
-        AssetClass("US Total Stock", 0.60, 6000.0),
-        AssetClass("Intl Stock", 0.30, 2000.0),
-        AssetClass("Bond Market", 0.10, 2000.0),
-    ]
-    portfolio = Portfolio(demo_portfolio)
-
+    portfolio = load_portfolio(args.file)
+    
     try:
         recommendations = calculate_rebalance(portfolio, args.contribution)
-
+        # Display results
         print("\n" + "="*40)
         print("     PORTFOLIO REBALANCE REPORT")
         print("="*40)
         print(f"Current Value:  ${portfolio.total_value:,.2f}")
         print(f"Contribution:   ${args.contribution:,.2f}")
         print("-" * 40)
-        
         for name, amount in recommendations.items():
             print(f"{name:<20}: ${amount:>12,.2f}")
-        
         print("-" * 40)
         print("Status: Rebalancing Complete.\n")
-
     except ValueError as e:
         print(f"Validation Error: {e}", file=sys.stderr)
-        sys.exit(1)
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":

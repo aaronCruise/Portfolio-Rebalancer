@@ -20,3 +20,17 @@ class Portfolio:
         total_allocation = sum(asset.target_allocation for asset in self.assets)
         # Using round to account for floating point math quirks
         return round(total_allocation, 4) == 1.0
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Portfolio":
+        """Creates a Portfolio instance from a dictionary."""
+        assets = []
+        for dict_item in data.get("assets", []):
+            assets.append(
+                AssetClass(
+                    name=dict_item["name"],
+                    target_allocation=dict_item["target_allocation"],
+                    current_balance=dict_item["current_balance"]
+                )
+            )
+        return cls(assets=assets)
