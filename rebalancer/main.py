@@ -1,12 +1,20 @@
+"""
+Defines the entry point for the Portfolio Rebalancer CLI tool.
+
+This module parses command-line arguments, initializes configuration,
+and hands off execution to the appropriate functions.
+"""
 import argparse
 import sys
 import json
 from .models import Portfolio
 from .engine import calculate_rebalance
 
+DEFAULT_PF_PATH = "portfolio.json"
+
 def load_portfolio(file_path: str | None) -> Portfolio:
     """Loads a portfolio from a JSON file, or a default if no path is given."""
-    file_to_load = file_path if file_path is not None else "portfolio.json"
+    file_to_load = file_path if file_path is not None else DEFAULT_PF_PATH
     
     try:
         with open(file_to_load, 'r') as f:

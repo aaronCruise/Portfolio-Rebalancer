@@ -1,3 +1,4 @@
+"""Implements the core math to calculate the recommended contribution amounts."""
 from typing import Dict
 from .models import Portfolio
 
@@ -25,21 +26,16 @@ def calculate_rebalance(portfolio: Portfolio, contribution: float) -> Dict[str, 
     for asset in portfolio.assets:
         target_amount = new_total_value * asset.target_allocation
         gap = target_amount - asset.current_balance
-        # We only ADD money, so we ignore negative gaps (sells).
-        gaps[asset.name] = max(0.0, gap)
+        gaps[asset.name] = max(0.0, gap) # Ignore negative gaps (sells)
 
     total_gap = sum(gaps.values())
-    
-    # If no one is behind their target, we could distribute 
-    # proportionally to target weights, but for now, we return zeros.
+   
+    # If no contribution calculated, return zeros immediately. 
+    # This is to avoid division by 0 later.
     if total_gap == 0:
         return {asset.name: 0.0 for asset in portfolio.assets}
 
-    # If contribution < total_gap, we scale the additions.
-    # If contribution > total_gap, this logic still works (scaling_factor > 1),
-    # but for a 'perfect' rebalance, scaling_factor would be exactly 1.0 
-    # for the gaps, and any excess would be distributed by target weights.
-    # Let's keep it simple: scale the gaps to match the contribution.
+    # If contribution != total_gap, we scale the additions.
     scaling_factor = contribution / total_gap
 
     result = {}

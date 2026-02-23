@@ -1,17 +1,17 @@
 {
   "assets": [
     {
-      "name": "Vanguard S&P 500",
+      "name": "US Total Stock",
       "target_allocation": 0.50,
       "current_balance": 1000.00
     },
     {
-      "name": "Fidelity Total Intl",
+      "name": "Intl Total Stock",
       "target_allocation": 0.25,
       "current_balance": 500.00
     },
     {
-      "name": "Vanguard Total Bond",
+      "name": "US Total Bond",
       "target_allocation": 0.25,
       "current_balance": 500.00
     }

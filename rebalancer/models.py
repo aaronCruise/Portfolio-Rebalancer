@@ -1,3 +1,4 @@
+"""Defines the classes to represent a portfolio and its components."""
 from dataclasses import dataclass, field
 
 @dataclass
