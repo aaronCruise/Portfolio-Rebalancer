@@ -1,24 +1,42 @@
-# Portfolio Rebalancer
+# Portfolio Rebalancer CLI
 
-A CLI tool to help investors maintain their target asset allocation through their contributions.
+A CLI tool designed to help investors maintain their target asset allocation through contribution-only rebalancing.
 
-## Overview
+![output](images/output.png "output")
 
-Maintaining a balanced portfolio is critical for risk management. This tool calculates exactly how much to contribute to each asset class to bring a portfolio back to its target weights. This minimizes the need to sell assets and helps avoid capital gains taxes.
+## Motivation
+I used to manage my rebalancing in a spreadsheet, but Excel has limits. I ported the logic to this CLI tool to achieve:
+
+- **Immutable Logic:** No more accidental formula breaks or errors.
+- **Testability:** Every calculation is verified by a test suite.
+- **Workflow Efficiency** Faster execution and a base for future automation.
+
+## Built with Gemini CLI
+This project was developed using **Gemini CLI**, an AI-powered code assistant. I used modern AI workflows for scaffolding, architectural designs, and test generation.
 
 ## Features
+- **Tax-Efficient Rebalancing:** Logic prioritizes adding to underweight assets rather than selling overweight ones.
+- **Proportional Scaling:** Intelligently handles contributions that are too small to fill all gaps perfectly.
+- **Modern Python:** Developed with Type Hints, Dataclasses, and a modular package structure.
 
-- **Contribution-Only Rebalancing:** Logic that prioritizes under-weighted assets for new contributions.
-- **CLI Interface:** Easy-to-use command-line tool for quick calculations.
-- **Type Safety:** Built with Python type hints for robustness.
-- **Unit Tested:** Core logic is verified with `pytest`.
+## Quick Start
 
-## Installation
+**Prerequisites:** Python 3.10+
 
 ```bash
+# Clone and install
+git clone https://github.com/aaronCruise/Portfolio-Rebalancer.git
+cd Portfolio-Rebalancer
 pip install -r requirements.txt
+
+# Run the rebalancer
+python3 -m rebalancer.main --contribution <dollar amount>
 ```
 
-## Usage
+## Engineering Quality
+- **Test Suite:** Run `pytest` to see the logic verification.
+- **Architecture:** Decoupled `models.py` (data), `engine.py` (math), and `main.py` (CLI).
+- **Validation:** Built-in checks to ensure allocations always sum to 100%.
 
-(Coming soon)
+---
+*Created as part of my post-grad portfolio to demonstrate clean code, test-driven development, and AI-assisted engineering.*
