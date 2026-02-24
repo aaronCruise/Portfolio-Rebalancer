@@ -3,7 +3,7 @@
 A CLI tool designed to help investors maintain their target asset allocation through contribution-only rebalancing.
 
 <p align="center">
-  <img src="images/output_example.png" alt="output_example"/>
+  <img src="https://raw.githubusercontent.com/aaronCruise/Portfolio-Rebalancer/refs/heads/main/images/output_example.png" alt="output_example"/>
 </p>
 
 This project was built using **Gemini CLI** to explore AI-driven development for architectural designs, scaffolding, and code generation.
@@ -15,52 +15,65 @@ I originally managed my investments and rebalancing through a spreadsheet. I por
 - Reliability. All logic lies within modules that are invisible to the user. No more accidental formula breaks!
 
 ## Features
-- Tax-efficient logic. Prioritizes buying underweight assets, never selling.
-- JSON portfolios. Load your custom portfolio from a simple `json` file.
-- Proportional scaling. Handles contributions that are too small to fill all gaps perfectly.
-- Modern Python. Built with type hints, dataclasses, and a modular package structure.
+- **Tax-Efficient Logic:** Prioritizes buying underweight assets, never selling.
+- **JSON Portfolios:** Load your custom portfolio from a simple `json` file.
+- **Proportional Scaling:** Handles contributions that are too small to fill all gaps perfectly.
+- **Modern Python:** Built with type hints, dataclasses, and a modular package structure.
+
+## Installation
+
+Install the tool directly from PyPI:
+
+```bash
+pip install portfolio-rebalancer-cli
+```
 
 ## Usage 
-**Prerequisites:** Python 3.10+
 
-1.  Install and Setup.
-    ```bash
-    git clone https://github.com/aaronCruise/Portfolio-Rebalancer.git
-    cd Portfolio-Rebalancer
-    
-    # Install the package locally in editable mode
-    pip install -e .
-    ```
-
-2.  Configure your portfolio.
-    The `portfolio.json` provided in this repository serves as a template. To use the tool, ensure a `portfolio.json` exists in your **current working directory**:
+1. **Configure your portfolio:**
+   Create a `portfolio.json` file in your current directory using the following format, adding asset classes and adjusting according to your portfolio:
 
     ```json
     {
       "assets": [
         {
-          "name": "Total Stock Market",
+          "name": "US Total Stock",
           "target_allocation": 0.60,
           "current_balance": 6000.00
         },
-        ...
+        {
+          "name": "International Stock",
+          "target_allocation": 0.30,
+          "current_balance": 2000.00
+        },
+        {
+          "name": "Bond Market",
+          "target_allocation": 0.10,
+          "current_balance": 2000.00
+        }
       ]
     }
     ```
 
-3. Run it.
-    *   **Default Mode** (looks for `portfolio.json` in current folder):
-        ```bash
-        rebalance --contribution 1000
-        ```
+2. **Run the rebalancer:**
 
-    *   **Custom File Mode**:
-        ```bash
-        rebalance --contribution 1000 --file my_portfolio.json
-        ```
+    * **Default Mode** (looks for `portfolio.json` in current folder):
+      ```bash
+      rebalance --contribution 1000
+      ```
 
-## Running Tests
-The core logic is verified with `pytest`. To run the tests:
+    * **Custom File Mode**:
+      ```bash
+      rebalance --contribution 1000 --file my_custom_portfolio.json
+      ```
+
+## Development & Testing
+
+If you want to contribute or run the tests:
+
 ```bash
+git clone https://github.com/aaronCruise/Portfolio-Rebalancer.git
+cd Portfolio-Rebalancer
+pip install -e .
 pytest
 ```
