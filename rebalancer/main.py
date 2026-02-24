@@ -21,7 +21,11 @@ def load_portfolio(file_path: str | None) -> Portfolio:
             data = json.load(f)
             return Portfolio.from_dict(data)
     except FileNotFoundError:
-        print(f"Error: Portfolio file not found at '{file_to_load}'", file=sys.stderr)
+        print(f"\nError: Portfolio file '{file_to_load}' not found.", file=sys.stderr)
+        print("\nTo get started:", file=sys.stderr)
+        print(f"1. Create a '{file_to_load}' file in your current directory.", file=sys.stderr)
+        print("2. Or use the --file flag to point to an existing JSON file.", file=sys.stderr)
+        print("\nSee the README for a portfolio.json template.", file=sys.stderr)
         sys.exit(1)
     except json.JSONDecodeError:
         print(f"Error: The file '{file_to_load}' is not a valid JSON file.", file=sys.stderr)

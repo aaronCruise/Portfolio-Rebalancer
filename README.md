@@ -23,28 +23,25 @@ I originally managed my investments and rebalancing through a spreadsheet. I por
 ## Usage 
 **Prerequisites:** Python 3.10+
 
-1.  Install.
+1.  Install and Setup.
     ```bash
     git clone https://github.com/aaronCruise/Portfolio-Rebalancer.git
     cd Portfolio-Rebalancer
-    pip install -r requirements.txt
+    
+    # Install the package locally in editable mode
+    pip install -e .
     ```
 
-2.  Configure your own portfolio.
-    Modify the existing `portfolio.json` file or create your own as follows:
+2.  Configure your portfolio.
+    The `portfolio.json` provided in this repository serves as a template. To use the tool, ensure a `portfolio.json` exists in your **current working directory**:
 
     ```json
     {
       "assets": [
         {
-          "name": "<asset class A>",
-          "target_allocation": "<target allocation as a decimal>",
-          "current_balance": "<dollar amount>"
-        },
-        {
-          "name": "<asset class B>",
-          "target_allocation": "<target allocation as a decimal>",
-          "current_balance": "<dollar amount>"
+          "name": "Total Stock Market",
+          "target_allocation": 0.60,
+          "current_balance": 6000.00
         },
         ...
       ]
@@ -52,14 +49,14 @@ I originally managed my investments and rebalancing through a spreadsheet. I por
     ```
 
 3. Run it.
-    *   Default Mode (uses `portfolio.json`):
+    *   **Default Mode** (looks for `portfolio.json` in current folder):
         ```bash
-        python3 -m rebalancer.main --contribution <dollar_amount>
+        rebalance --contribution 1000
         ```
 
-    *   Custom File Mode:
+    *   **Custom File Mode**:
         ```bash
-        python3 -m rebalancer.main --contribution <dollar_amount> --file </path/to/your/.json>
+        rebalance --contribution 1000 --file my_portfolio.json
         ```
 
 ## Running Tests
