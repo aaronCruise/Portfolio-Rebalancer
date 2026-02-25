@@ -3,6 +3,11 @@
 A CLI tool designed to help investors maintain their target asset allocation through contribution-only rebalancing.
 
 <p align="center">
+  <a href="https://badge.fury.io/py/portfolio-rebalancer-cli"><img src="https://badge.fury.io/py/portfolio-rebalancer-cli.svg" alt="PyPI version"></a>
+  <a href="https://www.python.org/downloads/release/python-3100/"><img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="Python 3.10+"></a>
+</p>
+
+<p align="center">
   <img src="https://raw.githubusercontent.com/aaronCruise/Portfolio-Rebalancer/refs/heads/main/images/output_example.png" alt="output_example"/>
 </p>
 
