@@ -57,16 +57,23 @@ def main():
     
     try:
         recommendations = calculate_rebalance(portfolio, args.contribution)
+        final_total = portfolio.total_value + args.contribution
+        
         # Display results
-        print("\n" + "="*40)
-        print("     PORTFOLIO REBALANCE REPORT")
-        print("="*40)
-        print(f"Current Value:  ${portfolio.total_value:,.2f}")
-        print(f"Contribution:   ${args.contribution:,.2f}")
-        print("-" * 40)
-        for name, amount in recommendations.items():
-            print(f"{name:<20}: ${amount:>12,.2f}")
-        print("-" * 40)
+        print("\n" + "="*55)
+        print("             PORTFOLIO REBALANCE REPORT")
+        print("="*55)
+        print(f"{'Asset Class':<20} | {'Add':>12} | {'Final %':>8}")
+        print("-" * 55)
+        
+        for asset in portfolio.assets:
+            amount_to_add = recommendations.get(asset.name, 0.0)
+            new_balance = asset.current_balance + amount_to_add
+            final_alloc = (new_balance / final_total) * 100 if final_total > 0 else 0
+            print(f"{asset.name:<20} | ${amount_to_add:>11,.2f} | {final_alloc:>7.1f}%")
+            
+        print("-" * 55)
+        print(f"Total Portfolio Value after contribution: ${final_total:,.2f}")
         print("Status: Rebalancing Complete.\n")
     except ValueError as e:
         print(f"Validation Error: {e}", file=sys.stderr)
