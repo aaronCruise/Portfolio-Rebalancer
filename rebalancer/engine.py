@@ -42,4 +42,13 @@ def calculate_rebalance(portfolio: Portfolio, contribution: float) -> Dict[str, 
     result = {}
     for name, gap in gaps.items():
         result[name] = round(gap * scaling_factor, 2)
+
+    rounding_remainder = round(contribution - sum(result.values()), 2)
+    if rounding_remainder != 0:
+        largest_gap_asset = max(gaps, key=gaps.get)
+        result[largest_gap_asset] = round(
+            result[largest_gap_asset] + rounding_remainder,
+            2
+        )
+
     return result

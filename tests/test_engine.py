@@ -66,6 +66,23 @@ def test_zero_contribution():
     assert result["A"] == 0.0
     assert result["B"] == 0.0
 
+def test_rounded_recommendations_sum_to_contribution():
+    """
+    Test case: Rounded cent values should still allocate the full contribution.
+    """
+    portfolio = Portfolio(
+        [
+            AssetClass("A", 0.34, 0.0),
+            AssetClass("B", 0.33, 0.0),
+            AssetClass("C", 0.33, 0.0),
+        ]
+    )
+
+    result = calculate_rebalance(portfolio, 0.01)
+
+    assert sum(result.values()) == 0.01
+    assert result["A"] == 0.01
+
 def test_invalid_contribution_raises_error():
     """
     Test case: Negative contribution should raise a ValueError.
