@@ -60,19 +60,32 @@ def main():
         final_total = portfolio.total_value + args.contribution
         
         # Display results
-        print("\n" + "="*55)
+        print("\n" + "="*79)
         print("             PORTFOLIO REBALANCE REPORT")
-        print("="*55)
-        print(f"{'Asset Class':<20} | {'Add':>12} | {'Final %':>8}")
-        print("-" * 55)
+        print("="*79)
+        print(
+            f"{'Asset Class':<20} | {'Current %':>9} | {'Target %':>8} | "
+            f"{'Add':>12} | {'Final %':>8}"
+        )
+        print("-" * 79)
         
         for asset in portfolio.assets:
             amount_to_add = recommendations.get(asset.name, 0.0)
             new_balance = asset.current_balance + amount_to_add
+            current_alloc = (
+                (asset.current_balance / portfolio.total_value) * 100
+                if portfolio.total_value > 0
+                else 0
+            )
+            target_alloc = asset.target_allocation * 100
             final_alloc = (new_balance / final_total) * 100 if final_total > 0 else 0
-            print(f"{asset.name:<20} | ${amount_to_add:>11,.2f} | {final_alloc:>7.1f}%")
+            print(
+                f"{asset.name:<20} | {current_alloc:>8.1f}% | "
+                f"{target_alloc:>7.1f}% | ${amount_to_add:>11,.2f} | "
+                f"{final_alloc:>7.1f}%"
+            )
             
-        print("-" * 55)
+        print("-" * 79)
         print(f"Total Portfolio Value after contribution: ${final_total:,.2f}")
         print("Status: Rebalancing Complete.\n")
     except ValueError as e:
