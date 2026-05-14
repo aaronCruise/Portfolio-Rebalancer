@@ -13,8 +13,9 @@ def calculate_rebalance(portfolio: Portfolio, contribution: float) -> Dict[str, 
     4. If the contribution is less than the total gap, distribute it 
        proportionally to those gaps.
     """
-    if not portfolio.validate():
-        raise ValueError("Portfolio target allocations must sum to 1.0 (100%).")
+    validation_errors = portfolio.validation_errors()
+    if validation_errors:
+        raise ValueError(" ".join(validation_errors))
 
     if contribution < 0:
         raise ValueError("Contribution must be a positive number.")
