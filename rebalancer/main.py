@@ -60,14 +60,15 @@ def main():
         final_total = portfolio.total_value + args.contribution
         
         # Display results
-        print("\n" + "="*105)
-        print("             PORTFOLIO REBALANCE REPORT")
-        print("="*105)
+        report_width = 105
+        print("\n" + "=" * report_width)
+        print("PORTFOLIO REBALANCE REPORT".center(report_width))
+        print("=" * report_width)
         print(
             f"{'Asset Class':<20} | {'Current %':>9} | {'Target %':>8} | "
             f"{'Drift':>7} | {'Add':>12} | {'Final %':>8} | {'Final Drift':>11}"
         )
-        print("-" * 105)
+        print("-" * report_width)
         
         for asset in portfolio.assets:
             amount_to_add = recommendations.get(asset.name, 0.0)
@@ -88,7 +89,7 @@ def main():
                 f"{final_drift:>+10.1f}%"
             )
             
-        print("-" * 105)
+        print("-" * report_width)
         print(f"Total Portfolio Value after contribution: ${final_total:,.2f}")
         print("Status: Rebalancing Complete.\n")
     except ValueError as e:

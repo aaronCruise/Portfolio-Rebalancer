@@ -11,7 +11,7 @@ A CLI tool designed to help investors maintain their target asset allocation thr
   <img src="https://raw.githubusercontent.com/aaronCruise/Portfolio-Rebalancer/refs/heads/main/images/output_example.png" alt="output_example"/>
 </p>
 
-This project was built using **Gemini CLI** to explore AI-driven development for architectural designs, scaffolding, and code generation.
+This project was built using **Gemini CLI** and **Codex** to explore AI-driven development for architectural designs, scaffolding, code generation, and iterative feature work.
 
 ## Motivation
 I originally managed my investments and rebalancing through a spreadsheet. I ported the logic to a CLI tool to achieve:
