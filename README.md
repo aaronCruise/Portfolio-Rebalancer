@@ -23,6 +23,7 @@ I originally managed my investments and rebalancing through a spreadsheet. I por
 - **Tax-Efficient Logic:** Prioritizes buying underweight assets, never selling.
 - **JSON Portfolios:** Load your custom portfolio from a simple `json` file.
 - **Proportional Scaling:** Handles contributions that are too small to fill all gaps perfectly.
+- **Command-Line Values:** Enter current asset values without editing the JSON file.
 - **Modern Python:** Built with type hints, dataclasses, and a modular package structure.
 
 ## Installation
@@ -66,6 +67,25 @@ pip install portfolio-rebalancer-cli
       ```bash
       rebalance --contribution 1000
       ```
+
+      The shorter contribution flag is also supported:
+      ```bash
+      rebalance -c 1000
+      ```
+
+    * **Enter Values Directly:**
+      ```bash
+      rebalance -c 1000 --value "US Total Stock=6000" --value "International Stock=2500"
+      ```
+
+      Add `--save-values` to save the entered values to the portfolio file.
+
+    * **Clear Current Values:**
+      ```bash
+      rebalance clear
+      ```
+
+      This sets all current balances to zero while keeping the rest of the portfolio unchanged.
 
     * **Custom File Mode**:
       ```bash

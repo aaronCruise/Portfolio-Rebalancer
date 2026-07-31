@@ -5,8 +5,9 @@ This module parses command-line arguments, initializes configuration,
 and hands off execution to the appropriate functions.
 """
 import argparse
-import sys
 import json
+import math
+import sys
 from .models import Portfolio
 from .engine import calculate_rebalance
 
@@ -35,15 +36,73 @@ def load_portfolio(file_path: str | None) -> Portfolio:
         sys.exit(1)
 
 
+def save_data(file_path: str, data: dict) -> None:
+    with open(file_path, 'w') as f:
+        json.dump(data, f, indent=2)
+        f.write('\n')
+
+
+def clear_values(file_path: str) -> None:
+    try:
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        for asset in data["assets"]:
+            asset["current_balance"] = 0.00
+        save_data(file_path, data)
+    except FileNotFoundError:
+        print(f"Error: Portfolio file '{file_path}' not found.", file=sys.stderr)
+        sys.exit(1)
+    except (json.JSONDecodeError, KeyError, TypeError):
+        print(f"Error: Invalid portfolio file '{file_path}'.", file=sys.stderr)
+        sys.exit(1)
+
+
+def apply_values(portfolio: Portfolio, values: list[str]) -> None:
+    assets = {asset.name: asset for asset in portfolio.assets}
+    names_seen = set()
+    for value in values:
+        try:
+            name, amount = value.split('=', 1)
+            amount = float(amount)
+        except (ValueError, TypeError):
+            raise ValueError(f"Invalid value '{value}'. Use NAME=AMOUNT.")
+
+        name = name.strip()
+        if not name or name not in assets:
+            raise ValueError(f"Unknown asset in value '{value}'.")
+        if not math.isfinite(amount) or amount < 0:
+            raise ValueError(f"Value for '{name}' must be a non-negative number.")
+        if name in names_seen:
+            raise ValueError(f"Value for '{name}' was provided more than once.")
+        names_seen.add(name)
+        assets[name].current_balance = amount
+
+
+def save_values(file_path: str, values: list[str]) -> None:
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+    amounts = {value.split('=', 1)[0].strip(): float(value.split('=', 1)[1]) for value in values}
+    for asset in data["assets"]:
+        if asset["name"] in amounts:
+            asset["current_balance"] = amounts[asset["name"]]
+    save_data(file_path, data)
+
+
 def main():
     """The main entry point for the CLI."""
     parser = argparse.ArgumentParser(
         description="A CLI tool for contribution-only portfolio rebalancing."
     )
     parser.add_argument(
-        "--contribution", 
+        "command",
+        nargs="?",
+        choices=["clear"],
+        help="Use 'clear' to reset all current balances to zero."
+    )
+    parser.add_argument(
+        "-c",
+        "--contribution",
         type=float, 
-        required=True, 
         help="The dollar amount you are contributing."
     )
     parser.add_argument(
@@ -51,12 +110,44 @@ def main():
         type=str,
         help="Optional: Path to your portfolio JSON file. Defaults to 'portfolio.json'."
     )
+    parser.add_argument(
+        "--value",
+        action="append",
+        default=[],
+        metavar="NAME=AMOUNT",
+        help="Override an asset value for this run. Can be used more than once."
+    )
+    parser.add_argument(
+        "--save-values",
+        action="store_true",
+        help="Save values provided with --value to the portfolio file."
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s 0.4.0"
+    )
     args = parser.parse_args()
+
+    if args.command == "clear":
+        if args.contribution is not None or args.value or args.save_values:
+            parser.error("'clear' cannot be combined with contribution or value options.")
+        clear_values(args.file if args.file is not None else DEFAULT_PF_PATH)
+        print(f"Cleared current balances in '{args.file if args.file is not None else DEFAULT_PF_PATH}'.")
+        return
+
+    if args.contribution is None:
+        parser.error("the following arguments are required: -c/--contribution")
+    if args.save_values and not args.value:
+        parser.error("--save-values requires at least one --value")
 
     portfolio = load_portfolio(args.file)
     
     try:
+        apply_values(portfolio, args.value)
         recommendations = calculate_rebalance(portfolio, args.contribution)
+        if args.save_values:
+            save_values(args.file if args.file is not None else DEFAULT_PF_PATH, args.value)
         final_total = portfolio.total_value + args.contribution
         
         # Display results
